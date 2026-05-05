@@ -166,6 +166,12 @@ TPRM_QUESTIONS = {
                 "fail_triggers": ["no", "standard ir only", "not documented"],
                 "pass_triggers": ["yes", "documented", "ai-specific"],
                 "required_control": "Require AI incident response SLA in contract."
-            },
-            {
-                "i
+           169        },
+170
+171        {
+172            "id": "IR-02",
+173            "risk": "High",
+...
+179        }
+180    ]
+181  }
