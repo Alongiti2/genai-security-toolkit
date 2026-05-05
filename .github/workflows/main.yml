@@ -1,1 +1,8 @@
+name: GenAI Security Scan
 
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sunday
+  workflow_dispatch:       # Allows manual trigger
