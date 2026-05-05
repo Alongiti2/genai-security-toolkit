@@ -21,10 +21,10 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r scanner/requirements.txt
 
       - name: Run GenAI Security Scanner
-        run: python main.py --target sample_report.json
+        run: python scanner/main.py --target scanner/sample_report.json
 
       - name: Upload scan results
         uses: actions/upload-artifact@v4
