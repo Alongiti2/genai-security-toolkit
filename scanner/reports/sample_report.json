@@ -1,1 +1,58 @@
 # placeholder — full code coming
+{
+  "vendor": "Anthropic Claude for Enterprise",
+  "integration_type": "rag",
+  "assessed_by": "Delphin A. Zaki",
+  "assessed_at": "2025-05-04T09:00:00",
+  "risk_score": 12,
+  "risk_rating": "MEDIUM",
+  "risk_rating_description": "Conditional approval — implement required controls first",
+  "critical_findings": 0,
+  "total_findings": 4,
+  "approval_status": "CONDITIONAL — Deploy only after required controls",
+  "business_summary": "Anthropic Claude for Enterprise may be deployed conditionally. 0 critical finding(s) require remediation before go-live. Schedule follow-up assessment after controls are implemented.",
+  "findings": [
+    {
+      "name": "Prompt Injection",
+      "severity": "High",
+      "finding": "HIGH: RAG pipeline detected. Retrieved document chunks are injected into the model context without sanitization.",
+      "required_control": "Validate and sanitize all retrieved document chunks. Apply instruction-pattern detection before context injection.",
+      "controls": ["Input validation", "Output monitoring", "Privilege separation", "Sandboxed execution"]
+    },
+    {
+      "name": "Sensitive Information Disclosure",
+      "severity": "Low",
+      "finding": "LOW: No persistent conversation storage reported by vendor.",
+      "required_control": "Verify no-storage claim via vendor attestation.",
+      "controls": ["Data minimization", "PII detection on outputs", "Context window access controls"]
+    },
+    {
+      "name": "Excessive Agency",
+      "severity": "Low",
+      "finding": "LOW: No autonomous write actions detected. Read-only access confirmed.",
+      "required_control": "Monitor for future capability additions by vendor.",
+      "controls": ["Human-in-the-loop gates", "Action scope restrictions", "Approval workflows for write actions"]
+    },
+    {
+      "name": "Supply Chain Vulnerabilities",
+      "severity": "Medium",
+      "finding": "MEDIUM: No SOC2 report. Penetration test exists but no continuous compliance audit.",
+      "required_control": "Request SOC2 Type II roadmap with committed timeline.",
+      "controls": ["Vendor SOC2 review", "Model signing", "Dependency scanning", "TPRM assessment"]
+    }
+  ],
+  "tprm_summary": {
+    "data_handling": "PASS — No training on user data, 30-day retention policy confirmed",
+    "access_control": "PASS — SSO and SCIM supported, OAuth scopes verified minimal",
+    "genai_specific": "CONDITIONAL — RAG retrieval boundaries require ACL validation",
+    "incident_response": "PASS — SOC2 Type II in progress, breach notification SLA confirmed 72hrs"
+  },
+  "approval_conditions": [
+    "Implement chunk-level content filtering on RAG pipeline before go-live",
+    "Obtain and review SOC2 Type II report when available",
+    "Configure audit log export to SIEM within 30 days of deployment",
+    "Add accuracy disclaimer to all model-generated outputs in the UI"
+  ],
+  "next_review_date": "2025-11-04",
+  "assessor_notes": "Anthropic Claude Enterprise demonstrates strong baseline security posture. Primary gap is RAG pipeline input sanitization which must be resolved before production deployment. Vendor cooperation was strong throughout assessment process."
+}
