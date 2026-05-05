@@ -1,1 +1,98 @@
+# .github/workflows/security-scan.yml
+# GenAI Security Assessment Toolkit — CI/CD Pipeline
+# Delphin A. Zaki | CIS 410 Cybersecurity Automation | Highline College
 
+name: GenAI Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday at 9am UTC
+
+jobs:
+  security-assessment:
+    name: GenAI Risk Assessment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run pytest security test suite
+        run: |
+          pytest tests/ \
+            -v \
+            --tb=short \
+            --cov=scanner \
+            --cov-report=term-missing
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+
+      - name: Run OWASP GenAI scanner — Anthropic Claude
+        run: |
+          python main.py \
+            --vendor "Anthropic Claude Enterprise" \
+            --type rag \
+            --rag yes \
+            --files no \
+            --trains no \
+            --stores yes \
+            --soc2 yes \
+            --pentest yes \
+            --mode owasp
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+
+      - name: Run OWASP GenAI scanner — Microsoft Copilot
+        run: |
+          python main.py \
+            --vendor "Microsoft Copilot" \
+            --type low-code-agent \
+            --rag yes \
+            --files yes \
+            --trains no \
+            --stores yes \
+            --emails yes \
+            --soc2 yes \
+            --pentest yes \
+            --mode owasp
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+
+      - name: Upload scan reports as artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genai-security-reports
+          path: reports/
+          retention-days: 30
+
+      - name: Run Bandit security linter
+        run: |
+          bandit -r scanner/ \
+            -f txt \
+            --severity-level medium \
+            -o bandit-report.txt || true
+          cat bandit-report.txt
+
+      - name: Upload Bandit report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bandit-security-report
+          path: bandit-report.txt
+          retention-days: 30
